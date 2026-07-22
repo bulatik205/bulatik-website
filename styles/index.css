@@ -3,6 +3,8 @@
 @import url("index/main.css");
 @import url("index/header.css");
 @import url("index/code-section.css");
+@import url("index/about.css");
+@import url("index/footer.css");
 :root {
   --mxw: 2000px;
   --card-bg: rgba(255, 255, 255, 0.05);
