@@ -20,7 +20,7 @@ class GitHubProjects {
             return repos
                 .filter(repo => !repo.fork) // Убираем форки (опционально)
                 .sort((a, b) => b.stargazers_count - a.stargazers_count)
-                .slice(0, 6); // Берём топ-6
+                .slice(0, 5); // Берём топ-5
 
         } catch (error) {
             console.error('Ошибка при получении репозиториев:', error);
@@ -129,9 +129,19 @@ class GitHubProjects {
             return;
         }
 
-        projectsGrid.innerHTML = repos
+        const projectsHTML = repos
             .map(repo => this.createProjectCard(repo))
             .join('');
+
+        projectsGrid.innerHTML = projectsHTML + `
+            <a href="/p/" class="project--card all-projects-link">
+                <div class="project--card-header" style="justify-content: center; height: 100%;">
+                    <h3 style="text-align: center; margin: 0;">
+                        Все проекты
+                    </h3>
+                </div>
+            </a>
+        `;
     }
 }
 
