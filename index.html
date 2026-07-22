@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bulatik205 | Главная</title>
     <link rel="stylesheet" href="styles/index.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
 </head>
 
 <body>
@@ -46,9 +47,87 @@
         </div>
     </div>
 
-    <div style="height: 200vh;"></div>
+    <div class="about-section">
+        <div class="about-image">
+            <img src="images/image.jpeg" alt="">
+        </div>
+        <div class="about-code">
+            <div class="code-window">
+                <div class="code-header">
+                    <span class="code-dot code-dot--red"></span>
+                    <span class="code-dot code-dot--yellow"></span>
+                    <span class="code-dot code-dot--green"></span>
+                    <span class="code-title">example.php</span>
+                </div>
+                <div class="code-body">
+                    <pre><code class="language-php" id="phpCodeBlock"></code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
     <script src="js/github.js"></script>
+    <script>
+        document.getElementById('phpCodeBlock').textContent = `<?php
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+
+require_once __DIR__ . '/../vendor/autoload.php';
+
+use DI\\ContainerBuilder;
+use App\\Controllers\\IndexController;
+use App\\Controllers\\AuthController;
+
+$containerBuilder = new ContainerBuilder();
+$containerBuilder->useAutowiring(true);
+
+$containerBuilder->addDefinitions([
+    Twig\\Environment::class => function() {
+        $loader = new \\Twig\\Loader\\FilesystemLoader(__DIR__ . '/../src/Views');
+        return new \\Twig\\Environment($loader, ['cache' => false]);
+    },
+    
+    IndexController::class => DI\\autowire(),
+    AuthController::class => DI\\autowire(),
+]);
+
+$container = $containerBuilder->build();
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') exit;
+
+$dispatcher = FastRoute\\simpleDispatcher(function (FastRoute\\RouteCollector $r) {
+    $r->addRoute('GET', '/', IndexController::class);
+    $r->addRoute('GET', '/auth', AuthController::class);    
+});
+
+$httpMethod = $_SERVER['REQUEST_METHOD'];
+$uri = rawurldecode(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
+$routeInfo = $dispatcher->dispatch($httpMethod, $uri);
+
+switch ($routeInfo[0]) {
+    case FastRoute\\Dispatcher::NOT_FOUND:
+        http_response_code(404);
+        header('Content-Type: application/json');
+        echo json_encode(['error' => 'Not Found']);
+        break;
+
+    case FastRoute\\Dispatcher::FOUND:
+        $controllerClass = $routeInfo[1];
+        $params = $routeInfo[2];
+        
+        try {
+            $controller = $container->get($controllerClass);
+            $controller($params);
+        } catch (\\Exception $e) {
+            http_response_code(500);
+            header('Content-Type: application/json');
+            echo json_encode(['error' => $e->getMessage()]);
+        }
+        break;
+}`;
+        hljs.highlightElement(document.getElementById('phpCodeBlock'));
+    </script>
     <script src="js/header.js"></script>
 </body>
 
