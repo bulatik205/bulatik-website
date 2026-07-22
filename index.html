@@ -7,6 +7,19 @@
     <link rel="stylesheet" href="styles/index.css">
 </head>
 <body>
+    <header class="header" id="glassHeader">
+        <div class="header--content">
+            <p>
+                bulatik
+            </p>
+
+            <div>
+                <a href="">Блог</a>
+                <a href="https://github.com/bulatik205/bulatik-website"><img src="images/GitHub_Invertocat_White.png" alt=""></a>
+            </div>
+        </div>
+    </header>
+
     <div class="main--block">
         <div class="main--block--body">
             <h2 class="fs-firacode">Привет, меня зовут Булат!</h2>
@@ -22,5 +35,24 @@
             </div>
         </div>
     </div>
+
+    <div style="height: 200vh;"></div>
+
+    <script>
+        const header = document.getElementById('glassHeader');
+        let lastScroll = 0;
+
+        window.addEventListener('scroll', () => {
+            const currentScroll = window.pageYOffset;
+            
+            if (currentScroll > 1) {
+                header.classList.add('visible');
+            } else {
+                header.classList.remove('visible');
+            }
+            
+            lastScroll = currentScroll;
+        });
+    </script>
 </body>
 </html>
